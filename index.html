@@ -2,172 +2,135 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Google+</title>
+<title>GPlus Full Demo</title>
 <style>
-    body { margin:0; font-family: Arial, sans-serif; background:#f5f5f5; }
+/* Жалпы стильдер */
+body { font-family: Arial, sans-serif; background:#f0f0f0; margin:0; padding:0; }
+header { background:#dd4b39; color:white; padding:10px 0; position:sticky; top:0; z-index:100; }
+header h1 { margin:0; text-align:center; font-size:28px; }
 
-    /* ҮСТІҢГІ ПАНЕЛЬ */
-    .topbar {
-        width:100%; height:56px; background:white;
-        display:flex; align-items:center;
-        border-bottom:1px solid #ddd;
-        position:fixed; top:0; left:0;
-        z-index:10;
-    }
-    .topbar img {
-        height:30px; margin-left:20px;
-    }
-    .search {
-        margin-left:20px;
-        background:#f1f3f4;
-        padding:8px 15px;
-        border-radius:20px;
-        width:300px;
-        border:1px solid #ddd;
-    }
-    .profile {
-        margin-left:auto; margin-right:20px;
-        width:35px; height:35px;
-        background:#4285f4;
-        border-radius:50%;
-    }
+/* Навигация */
+nav { display:flex; justify-content:center; background:#f5f5f5; border-bottom:1px solid #ccc; position:sticky; top:50px; z-index:100; }
+nav button { margin:5px; padding:8px 15px; cursor:pointer; border:none; border-radius:3px; background:#4285f4; color:white; }
+nav button:hover { background:#357ae8; }
 
-    /* СОЛ ЖАҚ МЕНЮ */
-    .sidebar {
-        width:230px;
-        background:white;
-        position:fixed;
-        top:56px;
-        bottom:0;
-        border-right:1px solid #ddd;
-        padding-top:10px;
-    }
-    .sidebar div {
-        padding:12px 20px;
-        font-size:15px;
-        cursor:pointer;
-    }
-    .sidebar div:hover {
-        background:#f1f1f1;
-    }
+/* Feed контейнер */
+main { width:60%; margin:20px auto; }
 
-    /* ЛЕНТА */
-    .feed {
-        margin-left:250px;
-        padding-top:80px;
-        max-width:600px;
-    }
-    .create-post {
-        background:white;
-        padding:15px;
-        border-radius:8px;
-        border:1px solid #ddd;
-        margin-bottom:20px;
-    }
-    .post {
-        background:white;
-        padding:15px;
-        border-radius:8px;
-        border:1px solid #ddd;
-        margin-bottom:20px;
-    }
-    .post-header {
-        display:flex;
-        align-items:center;
-        margin-bottom:10px;
-    }
-    .post-avatar {
-        width:40px; height:40px;
-        background:#4285f4;
-        border-radius:50%;
-        margin-right:10px;
-    }
-    .post-name {
-        font-weight:bold;
-        font-size:15px;
-    }
-    .post-text {
-        margin:10px 0;
-        font-size:15px;
-    }
-    .post-actions {
-        display:flex;
-        color:#555;
-        margin-top:10px;
-        border-top:1px solid #eee;
-        padding-top:10px;
-        font-size:14px;
-    }
-    .post-actions div {
-        margin-right:20px;
-        cursor:pointer;
-    }
-    .post-actions div:hover {
-        color:#000;
-    }
+/* Пост стильдері */
+.post { background:white; padding:15px; margin-bottom:15px; border-radius:5px; box-shadow:0 2px 5px rgba(0,0,0,0.2); opacity:0; transition: opacity 0.5s; }
+.post h3 { margin:0 0 10px 0; font-size:18px; color:#333; }
+.post p { margin:0 0 10px 0; color:#555; }
+button.like { margin-right:10px; padding:5px 10px; cursor:pointer; border:none; border-radius:3px; background:#4285f4; color:white; }
+button.comment { margin-right:10px; padding:5px 10px; cursor:pointer; border:none; border-radius:3px; background:#0f9d58; color:white; }
+
+/* Settings popup */
+#settingsPopup {
+    display:none;
+    position:fixed;
+    top:70px;
+    right:20px;
+    width:220px;
+    background:white;
+    border:1px solid #ccc;
+    border-radius:5px;
+    box-shadow:0 0 15px rgba(0,0,0,0.3);
+    z-index:1000;
+    padding:10px;
+}
+#settingsPopup h4 { margin:0 0 10px 0; font-size:16px; }
+#settingsPopup button { width:100%; margin-bottom:5px; background:#4285f4; color:white; cursor:pointer; }
+#settingsPopup button:hover { background:#357ae8; }
 </style>
 </head>
 <body>
 
-<!-- ҮСТІҢГІ ПАНЕЛЬ -->
-<div class="topbar">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Google_plus_2015_logo.svg">
-    <input class="search" placeholder="Search Google+">
-    <div class="profile"></div>
+<header>
+<h1>GPlus Live Demo</h1>
+</header>
+
+<nav>
+<button onclick="showHome()">Home</button>
+<button onclick="showDiscover()">Discover</button>
+<button onclick="showTrending()">Trending</button>
+<button onclick="showProfile()">Profile</button>
+<button onclick="toggleSettings()">Settings</button>
+</nav>
+
+<div id="settingsPopup">
+<h4>Settings</h4>
+<button onclick="alert('Account Settings clicked')">Account</button>
+<button onclick="alert('Privacy Settings clicked')">Privacy</button>
+<button onclick="alert('Notifications Settings clicked')">Notifications</button>
+<button onclick="toggleSettings()">Close</button>
 </div>
 
-<!-- СОЛ ЖАҚ МЕНЮ -->
-<div class="sidebar">
-    <div>Home</div>
-    <div>Discover</div>
-    <div>Communities</div>
-    <div>Profile</div>
-    <div>Settings</div>
-</div>
+<main id="feed">
+<!-- NPC посттар автоматты түрде қосылады -->
+</main>
 
-<!-- ЛЕНТА -->
-<div class="feed">
+<script>
+// NPC аттары және пост мәтіндері
+const npcNames = ["Alex Johnson","Maria Smith","John Doe","Emma Wilson","Michael Brown","Sophia Davis","William Taylor","Olivia Martinez","James Anderson","Isabella Thomas"];
+const npcPosts = [
+"Hello everyone! Welcome to my demo post.",
+"Check out my new post!",
+"Just had a great lunch today!",
+"Loving this demo page!",
+"Good morning everyone!",
+"Learning HTML and JS is fun.",
+"Just finished a cool project.",
+"Excited for the weekend!",
+"Watching a great movie tonight.",
+"Trying out new recipes!"
+];
 
-    <div class="create-post">
-        <b>Create Post</b>
-        <div style="margin-top:10px; background:#f1f3f4; padding:10px; border-radius:6px;">
-            What's new?
-        </div>
-    </div>
+// Пост жасау функциясы
+function createPost(name, text) {
+    const feed = document.getElementById("feed");
+    const postDiv = document.createElement("div");
+    postDiv.className = "post";
+    postDiv.innerHTML = `
+        <h3>${name}</h3>
+        <p>${text}</p>
+        <button class="like" onclick="like(this)">Like (<span>0</span>)</button>
+        <button class="comment" onclick="comment('${name}')">Comment</button>
+    `;
+    feed.insertBefore(postDiv, feed.firstChild);
+    setTimeout(()=>{postDiv.style.opacity=1;},50);
+}
 
-    <!-- Пост 1 -->
-    <div class="post">
-        <div class="post-header">
-            <div class="post-avatar"></div>
-            <div class="post-name">Arman • Public</div>
-        </div>
-        <div class="post-text">
-            This is a sample Google+ style post!
-        </div>
-        <div class="post-actions">
-            <div>+1</div>
-            <div>Comment</div>
-            <div>Share</div>
-        </div>
-    </div>
+// Like және Comment батырмалары
+function like(btn) {
+    const span = btn.querySelector('span');
+    span.textContent = parseInt(span.textContent)+1;
+}
+function comment(name) {
+    const c = prompt(`Write a comment for ${name}:`);
+    if(c) alert(`${name} received comment: ${c}`);
+}
 
-    <!-- Пост 2 -->
-    <div class="post">
-        <div class="post-header">
-            <div class="post-avatar"></div>
-            <div class="post-name">Lesar • Friends</div>
-        </div>
-        <div class="post-text">
-            Google+ style recreated in pure HTML and CSS!
-        </div>
-        <div class="post-actions">
-            <div>+1</div>
-            <div>Comment</div>
-            <div>Share</div>
-        </div>
-    </div>
+// NPC автоматты посттар (әр 1 секунд)
+let npcIndex = 0;
+setInterval(()=>{
+    const name = npcNames[npcIndex % npcNames.length];
+    const text = npcPosts[npcIndex % npcPosts.length];
+    createPost(name, text);
+    npcIndex++;
+}, 1000);
 
-</div>
+// Навигация батырмалары
+function showHome() { alert("Home clicked! Feed is showing."); }
+function showDiscover() { alert("Discover clicked! Explore posts."); }
+function showTrending() { alert("Trending clicked! Popular posts."); }
+function showProfile() { alert("Profile clicked! Profile page here."); }
+
+// Settings popup
+function toggleSettings() {
+    const popup = document.getElementById("settingsPopup");
+    popup.style.display = (popup.style.display==="block") ? "none" : "block";
+}
+</script>
 
 </body>
 </html>
